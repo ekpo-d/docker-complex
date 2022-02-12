@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3050:80
+    depends_on:
+      - api
+      - client
+
+  api:
+    build:
+      context: ./server
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      - REDIS_HOST=
+      - REDIS_PORT=
+      - PGUSER=
+      - PGHOST=
+      - PGDATABASE=
+      - PGPASSWORD=
+      - PGPORT=
+    
+  client:
+    stdin_open: true
+    build:
+      context: ./client
+    
+  worker:
+    stdin_open: true
+    build:
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+    environment:
+      - REDIS_HOST=
+      - REDIS_PORT=
+
+    

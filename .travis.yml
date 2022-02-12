@@ -14,13 +14,11 @@ script:
   - docker run -e CI=true ekpo3/complex-client npm run test
 
 after_success:
-  if: branch = master
-  - echo "Test Success - Branch($TRAVIS_BRANCH) Pull Request($TRAVIS_PULL_REQUEST) Tag($TRAVIS_TAG)"
-  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then echo -e "Push Container to Docker Hub"; fi
-  - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-  - export REPO=jayjohnson/springxd-base
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - docker build -f Dockerfile -t $REPO:$COMMIT .
-  - docker tag $REPO:$COMMIT $REPO:$TAG
-  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
-  - docker push $REPO
+  - docker build -t ekpo3/complex-client ./client
+  - docker build -t ekpo3/complex-nginx ./nginx
+  - docker build -t ekpo3/complex-server ./server
+  - docker build -t ekpo3/complex-worker ./worker
+  - docker push ekpo3/complex-client
+  - docker push ekpo3/complex-nginx
+  - docker push ekpo3/complex-server
+  - docker push ekpo3/complex-worker

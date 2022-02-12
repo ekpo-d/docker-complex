@@ -22,3 +22,16 @@ after_success:
   - docker push ekpo3/complex-nginx
   - docker push ekpo3/complex-server
   - docker push ekpo3/complex-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-1'
+  app: 'docker-complex'
+  env: 'Dockercomplex-env'
+  bucket_name: 'elasticbeanstalk-us-east-1-567933839930'
+  bucket_path: 'docker-complex'
+  on:
+    branch: main
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+
